@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SteamFree.EXE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#0a0618;
+  --win:#140c2e;
+  --border:#2a1b52;
+  --accent:#8b5cf6;
+  --accent2:#c084fc;
+  --text:#e5e7eb;
+  --muted:#a1a1aa;
+}
+*{box-sizing:border-box;font-family:Segoe UI,sans-serif}
+body{
+  margin:0;height:100vh;
+  background:radial-gradient(circle at top,#1b1040,#05020e);
+  display:flex;align-items:center;justify-content:center;
+}
+.window{
+  width:520px;
+  background:var(--win);
+  border-radius:14px;
+  border:1px solid var(--border);
+  box-shadow:0 40px 80px rgba(0,0,0,.6);
+  overflow:hidden;
+}
+.titlebar{
+  height:42px;
+  background:linear-gradient(90deg,#1f1348,#12082b);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;color:var(--text)
+}
+.win-btns{display:flex;gap:8px}
+.win-btn{width:12px;height:12px;border-radius:50%}
+.red{background:#ef4444}
+.yellow{background:#facc15}
+.green{background:#22c55e}
+
+.content{padding:32px}
+h1{
+  margin:0;
+  font-size:28px;
+  color:var(--accent);
+  text-shadow:0 0 18px var(--accent2)
+}
+p{margin:6px 0 20px;color:var(--muted);font-size:14px}
+input{
+  width:100%;
+  padding:16px;
+  border-radius:12px;
+  border:1px solid #2a1b52;
+  background:#0b0620;
+  color:var(--text);
+  font-size:16px
+}
+button{
+  margin-top:18px;
+  width:100%;
+  padding:16px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:700;
+  color:white;
+  background:linear-gradient(135deg,#7c3aed,#c084fc);
+  box-shadow:0 10px 30px rgba(192,132,252,.4)
+}
+button:disabled{opacity:.6;cursor:not-allowed}
+
+.status{
+  margin-top:16px;
+  font-size:13px;
+  color:var(--muted)
+}
+
+.progress{
+  margin-top:12px;
+  width:100%;
+  height:10px;
+  background:#0b0620;
+  border-radius:10px;
+  overflow:hidden;
+  display:none;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .3s ease;
+}
+
+.footer{
+  margin-top:26px;
+  font-size:11px;
+  color:#6b7280;
+  text-align:center
+}
+</style>
+</head>
+
+<body>
+
+<div class="window">
+  <div class="titlebar">
+    <span>SteamFree.EXE</span>
+    <div class="win-btns">
+      <div class="win-btn red"></div>
+      <div class="win-btn yellow"></div>
+      <div class="win-btn green"></div>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>SteamFree.EXE</h1>
+    <p>Manifest & Lua Downloader</p>
+
+    <input id="appid" placeholder="Steam AppID (ex: 730)">
+    <button id="launchBtn" onclick="start()">Launch</button>
+
+    <div id="status" class="status">Enter AppID</div>
+
+    <div class="progress" id="progress">
+      <div class="progress-bar" id="bar"></div>
+    </div>
+
+    <div class="footer">
+      Offline • Free Games • By .EXE
+    </div>
+  </div>
+</div>
+
+<script>
+function start(){
+  const appid = document.getElementById('appid').value.trim();
+  const status = document.getElementById('status');
+  const bar = document.getElementById('bar');
+  const progress = document.getElementById('progress');
+  const btn = document.getElementById('launchBtn');
+
+  if(!/^[0-9]+$/.test(appid)){
+    status.textContent = '❌ Invalid AppID';
+    return;
+  }
+
+  btn.disabled = true;
+  progress.style.display = 'block';
+  bar.style.width = '0%';
+
+  status.textContent = '🔍 Scanning Steam files...';
+  bar.style.width = '30%';
+
+  setTimeout(()=>{
+    status.textContent = '🧠 Reading app manifest...';
+    bar.style.width = '60%';
+  },900);
+
+  setTimeout(()=>{
+    status.textContent = '⚙️ Preparing download...';
+    bar.style.width = '90%';
+  },1800);
+
+  setTimeout(()=>{
+    bar.style.width = '100%';
+    status.textContent = '⬇️ Downloading files...';
+
+    downloadZip(appid);
+
+    btn.disabled = false;
+  },2600);
+}
+
+function downloadZip(id){
+  window.open(
+    `https://pub-5b6d3b7c03fd4ac1afb5bd3017850e20.r2.dev/${id}.zip`,
+    '_blank'
+  );
+}
+</script>
+
+</body>
+</html>
